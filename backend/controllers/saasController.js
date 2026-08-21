@@ -148,7 +148,7 @@ const getSaasStatus = async (req, res) => {
 const updateSaasStatus = async (req, res) => {
   try {
     const {
-      status, plan, monthlyFee, nextBilling, pauseReason, pricingRates,
+      status, plan, monthlyFee, nextBilling, nextBillingDate, pauseReason, pricingRates,
       defaultMonthlyFee, defaultTrialDays, defaultPlan, globalPauseMessage,
       supportPhone, supportEmail, autoRenewReminders
     } = req.body;
@@ -156,28 +156,29 @@ const updateSaasStatus = async (req, res) => {
     const finalPlan = plan || defaultPlan;
     const finalFee = monthlyFee || defaultMonthlyFee;
     const finalPause = pauseReason || globalPauseMessage;
+    const finalBilling = nextBilling || nextBillingDate;
 
     if (status !== undefined) {
       await setSetting('saas_status', status);
-      await query("UPDATE clients SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [status]);
+      await query("UPDATE clients SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [status]);
     }
     if (finalPlan !== undefined) {
       await setSetting('saas_plan', finalPlan);
       await setSetting('saas_default_plan', finalPlan);
-      await query("UPDATE clients SET plan_name = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [finalPlan]);
+      await query("UPDATE clients SET plan_name = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [finalPlan]);
     }
     if (finalFee !== undefined) {
       await setSetting('saas_monthly_fee', String(finalFee));
       await setSetting('saas_default_monthly_fee', String(finalFee));
-      await query("UPDATE clients SET monthly_fee = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [String(finalFee)]);
+      await query("UPDATE clients SET monthly_fee = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [String(finalFee)]);
     }
-    if (nextBilling !== undefined) {
-      await setSetting('saas_next_billing', nextBilling);
-      await query("UPDATE clients SET next_billing_date = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [nextBilling]);
+    if (finalBilling !== undefined) {
+      await setSetting('saas_next_billing', finalBilling);
+      await query("UPDATE clients SET next_billing_date = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [finalBilling]);
     }
     if (finalPause !== undefined) {
       await setSetting('saas_pause_reason', finalPause);
-      await query("UPDATE clients SET pause_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [finalPause]);
+      await query("UPDATE clients SET pause_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [finalPause]);
     }
     if (defaultTrialDays !== undefined) {
       await setSetting('saas_trial_days', String(defaultTrialDays));
@@ -194,7 +195,7 @@ const updateSaasStatus = async (req, res) => {
     if (pricingRates !== undefined) {
       const ratesStr = typeof pricingRates === 'string' ? pricingRates : JSON.stringify(pricingRates);
       await setSetting('saas_pricing_rates', ratesStr);
-      await query("UPDATE clients SET pricing_rates = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id = 'CLI-RRK-002' OR status != 'deleted'", [ratesStr]);
+      await query("UPDATE clients SET pricing_rates = ?, updated_at = CURRENT_TIMESTAMP WHERE client_id IN ('CLI-RRK-002', 'CLI-KKR-002') OR status != 'deleted' OR id = 1", [ratesStr]);
     }
 
     const currentStatus = await getSetting('saas_status', 'active');
@@ -363,11 +364,12 @@ const updateClient = async (req, res) => {
 
     // If updating primary client, sync global saas_status, saas_plan, saas_monthly_fee
     const updatedClient = existing[0];
-    if (updatedClient.client_id === 'CLI-RRK-002' || updatedClient.id == 1) {
+    if (updatedClient.client_id === 'CLI-RRK-002' || updatedClient.client_id === 'CLI-KKR-002' || updatedClient.id == 1) {
       if (status) await setSetting('saas_status', status);
       if (planName) await setSetting('saas_plan', planName);
-      if (monthlyFee) await setSetting('saas_monthly_fee', monthlyFee);
+      if (monthlyFee) await setSetting('saas_monthly_fee', String(monthlyFee));
       if (pauseReason) await setSetting('saas_pause_reason', pauseReason);
+      if (nextBillingDate) await setSetting('saas_next_billing', nextBillingDate);
     }
 
     if (req.body.pricingRates !== undefined) {

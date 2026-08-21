@@ -1,9 +1,9 @@
-# Apache Configuration for Mediqora Super Admin Suite
-# Subpath: /hms/
+# Apache Configuration for RRK Clinic & Multispecialty Hospital
+# Subpath: /rrk/
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /hms/
+  RewriteBase /rrk/
 
   # If an existing file or directory is requested, serve it directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]

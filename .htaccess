@@ -1,0 +1,38 @@
+# ==============================================================================
+# MEDIQORA HMS PLATFORM - ROOT APACHE CONFIGURATION (.htaccess)
+# Supports:
+# 1. /api/   -> Backend REST API (Reverse Proxy to Node.js port 5000)
+# 2. /rrk/   -> RRK Clinic Hospital Client Portal (SPA React App)
+# 3. /hms/   -> Mediqora Super Admin SaaS Suite (SPA React App)
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # ----------------------------------------------------------------------------
+  # 1. API Reverse Proxy to Node.js Backend Server (Port 5000)
+  # ----------------------------------------------------------------------------
+  <IfModule mod_proxy.c>
+    SSLProxyEngine On
+    RewriteRule ^api/(.*)$ http://127.0.0.1:5000/api/$1 [P,L]
+  </IfModule>
+
+  # ----------------------------------------------------------------------------
+  # 2. Root Redirect (domain.com/ -> domain.com/rrk/)
+  # ----------------------------------------------------------------------------
+  RewriteRule ^$ /rrk/ [R=301,L]
+
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>

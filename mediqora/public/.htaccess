@@ -1,9 +1,9 @@
-# Apache Configuration for Shree Ram Homeo Appointment Booking Application
-# Target Subfolder Path: /sriram-homeo-booking-form/
+# Apache Configuration for Mediqora Super Admin Suite
+# Subpath: /hms/
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /sriram-homeo-booking-form/
+  RewriteBase /hms/
 
   # If an existing file or directory is requested, serve it directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]

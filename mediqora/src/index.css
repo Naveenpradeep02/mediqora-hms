@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .bg-page-tint {
+    background-color: #F8FAFC;
+  }
+
+  .card-shadow {
+    box-shadow: 0 20px 40px -15px rgba(22, 163, 74, 0.12), 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Explicit Brand Helper Classes */
+.bg-brand-green,
+.bg-brand-orange {
+  background-color: #16a34a !important;
+}
+.text-brand-green,
+.text-brand-orange {
+  color: #16a34a !important;
+}
+.border-brand-green,
+.border-brand-orange {
+  border-color: #16a34a !important;
+}
+.bg-brand-mint,
+.bg-brand-cream {
+  background-color: #F0FDF4 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F0FDF4;
+}
+::-webkit-scrollbar-thumb {
+  background: #BBF7D0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+}

@@ -28,11 +28,17 @@ ON DUPLICATE KEY UPDATE
   name = VALUES(name),
   description = VALUES(description);
 
--- Insert Default Admin User (Email: dr.selvakumarr@gmail.com, Password: AdminPassword123!)
--- Hash: $2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeg6Lruj3vjPGga31lW
+-- Insert Default Users for RRK Clinic & Super Admin
+-- Password Hashes:
+-- admin123: $2b$10$2l1ZJekf/83b3aEms5rLweq803yF9t2B5O7eKjP0w1.nFwPjNlmWy
+-- superadmin123: $2b$10$wN1rFj0V5.cK4M8.5jYyweCjKk2t9N2.K7f2H9eJ0m1.nFwPjNlmWy
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-(1, 'Dr. Selvakumar', 'dr.selvakumarr@gmail.com', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeg6Lruj3vjPGga31lW', 'admin')
+(1, 'RRK Hospital Administrator', 'admin@rrkclinic.com', '$2b$10$2l1ZJekf/83b3aEms5rLweq803yF9t2B5O7eKjP0w1.nFwPjNlmWy', 'admin'),
+(2, 'Dr. R.R. Rajan', 'dr.rajan@rrkclinic.com', '$2b$10$2l1ZJekf/83b3aEms5rLweq803yF9t2B5O7eKjP0w1.nFwPjNlmWy', 'doctor'),
+(3, 'Srija', 'info@mediqora.in', '$2b$10$wN1rFj0V5.cK4M8.5jYyweCjKk2t9N2.K7f2H9eJ0m1.nFwPjNlmWy', 'superadmin')
 ON DUPLICATE KEY UPDATE 
   name = VALUES(name),
   email = VALUES(email),
-  password_hash = VALUES(password_hash);
+  password_hash = VALUES(password_hash),
+  role = VALUES(role);
+

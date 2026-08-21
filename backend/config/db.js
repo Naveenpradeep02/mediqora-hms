@@ -385,17 +385,68 @@ async function seedDefaultUsers() {
       console.log('👤 Updated Super Admin user: Srija (info@mediqora.in)');
     }
 
-    // 2. RRK Clinic Doctor & Admin Accounts
-    const existingDoctor = await query('SELECT id FROM users WHERE email IN (?, ?, ?)', ['admin@rrkclinic.com', 'dr.rajan@rrkclinic.com', 'admin@kkrclinic.com']);
-    if (existingDoctor.length === 0) {
+    // 2. RRK Clinic Staff & Admin Accounts
+    const adminHash = await bcrypt.hash('admin123', 10);
+    const doctorPassHash = await bcrypt.hash('doctor123', 10);
+    const receptionHash = await bcrypt.hash('reception123', 10);
+
+    // 2A. Hospital Admin Account
+    const existingAdmin = await query('SELECT id FROM users WHERE email IN (?, ?)', ['admin@rrkclinic.com', 'admin@kkrclinic.com']);
+    if (existingAdmin.length === 0) {
       await query('INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?)', [
-        'Dr. R.R. Rajan',
+        'RRK Hospital Administrator',
         'admin@rrkclinic.com',
-        doctorHash,
-        'doctor',
+        adminHash,
+        'admin',
         '+91 98400 11223'
       ]);
-      console.log('👨‍⚕️ Created RRK Doctor Admin user: admin@rrkclinic.com');
+      console.log('👑 Created RRK Hospital Administrator user: admin@rrkclinic.com');
+    } else {
+      await query('UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?', [
+        'RRK Hospital Administrator',
+        'admin@rrkclinic.com',
+        'admin',
+        existingAdmin[0].id
+      ]);
+      console.log('👑 Updated RRK Hospital Administrator user role to admin');
+    }
+
+    // 2B. Senior Doctors
+    const existingDocRajan = await query('SELECT id FROM users WHERE email IN (?, ?)', ['dr.rajan@rrkclinic.com', 'dr.rajan@kkrclinic.com']);
+    if (existingDocRajan.length === 0) {
+      await query('INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?)', [
+        'Dr. R.R. Rajan',
+        'dr.rajan@rrkclinic.com',
+        doctorPassHash,
+        'doctor',
+        '+91 98401 22334'
+      ]);
+      console.log('👨‍⚕️ Created Doctor user: dr.rajan@rrkclinic.com');
+    }
+
+    const existingDocAnitha = await query('SELECT id FROM users WHERE email IN (?, ?)', ['dr.anitha@rrkclinic.com', 'dr.anitha@kkrclinic.com']);
+    if (existingDocAnitha.length === 0) {
+      await query('INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?)', [
+        'Dr. Anitha Rajan',
+        'dr.anitha@rrkclinic.com',
+        doctorPassHash,
+        'doctor',
+        '+91 98402 33445'
+      ]);
+      console.log('👩‍⚕️ Created Doctor user: dr.anitha@rrkclinic.com');
+    }
+
+    // 2C. Front Desk Receptionist
+    const existingReceptionist = await query('SELECT id FROM users WHERE email IN (?, ?)', ['receptionist@rrkclinic.com', 'receptionist@kkrclinic.com']);
+    if (existingReceptionist.length === 0) {
+      await query('INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?)', [
+        'Priya Sundaram',
+        'receptionist@rrkclinic.com',
+        receptionHash,
+        'receptionist',
+        '+91 98403 44556'
+      ]);
+      console.log('📋 Created Receptionist user: receptionist@rrkclinic.com');
     }
 
     // 3. Seed RRK Clinic Branches if empty

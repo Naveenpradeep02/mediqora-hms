@@ -49,7 +49,7 @@ function App() {
           },
         }}
       />
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Routes>
           {/* Public Patient Booking Routes */}
           <Route path="/" element={<PublicLayout />}>

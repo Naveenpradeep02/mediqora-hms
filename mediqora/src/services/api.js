@@ -1,10 +1,13 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
   if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     return 'http://localhost:5000/api';
   }
-  return import.meta.env.VITE_API_URL || 'https://sri-ram-homeo-appointment-booking.onrender.com/api';
+  return '/api';
 };
 
 const API = axios.create({

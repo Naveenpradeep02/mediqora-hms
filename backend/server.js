@@ -37,13 +37,26 @@ app.use('/api/', limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check Route
+// Root & Health Check Routes
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: '🏥 Mediqora HMS & Multi-Hospital SaaS Backend API is Online & Operational',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth/login',
+      saas: '/api/saas/status'
+    }
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
     status: 'Healthy',
     timestamp: new Date().toISOString(),
-    service: 'Shree Ram Homeo API'
+    service: 'Mediqora HMS API'
   });
 });
 

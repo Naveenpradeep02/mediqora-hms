@@ -24,12 +24,13 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting - optimized for real-time HMS multi-portal polling
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // Limit each IP to 200 requests per windowMs
+  max: 5000, // Generous limit for active clinics and real-time dashboard sync
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path === '/api/health' || req.path.startsWith('/api/saas/status')
 });
 app.use('/api/', limiter);
 
